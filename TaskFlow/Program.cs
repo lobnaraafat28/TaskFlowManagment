@@ -1,8 +1,12 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TaskFlow.Core.Interfaces;
 using TaskFlow.Infrastructure.Context;
 using TaskFlow.Infrastructure.Entities;
+using TaskFlow.Infrastructure.Repositories;
+using TaskFlow.Services.Interfaces;
+using TaskFlow.Services.Services;
 
 namespace TaskFlow
 {
@@ -18,6 +22,9 @@ namespace TaskFlow
             builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IBoardService, BoardService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

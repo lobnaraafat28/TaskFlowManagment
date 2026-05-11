@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Services.Interfaces;
 
 namespace TaskFlow.API.Controllers
 {
@@ -7,7 +8,12 @@ namespace TaskFlow.API.Controllers
     [ApiController]
     public class BoardsController : ControllerBase
     {
-        [HttpGet]
+        private readonly IBoardService _boardService;
+
+        public BoardsController(IBoardService boardService)
+        {
+            _boardService = boardService;
+        }
 
     }
 }
