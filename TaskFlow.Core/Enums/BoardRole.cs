@@ -9,6 +9,7 @@ namespace TaskFlow.Core.Enums
     public enum BoardRole
     {
         Admin,
-        Member
+        Member,
+        Creator
     }
 }

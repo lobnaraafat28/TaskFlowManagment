@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TaskFlow.Application.DTOs;
+using TaskFlow.Core.Entities;
+using TaskFlow.Core.Enums;
 using TaskFlow.Core.Interfaces;
 using TaskFlow.Services.DTOs;
 using TaskFlow.Services.Interfaces;
@@ -17,29 +20,73 @@ namespace TaskFlow.Services.Services
         {
            _unitOfWork = unitOfWork;
         }
-        public Task<BoardDTO> CreateBoardAsync(BoardDTO dto)
+        public async Task<int> CreateBoardAsync(BoardDTO dto, string userId)
         {
-            throw new NotImplementedException();
+            
+                var board = new Board()
+                {
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    CreatorId = userId
+                
+                };
+            board.BoardUsers.Add(new BoardUser
+            {
+                UserId = userId,
+                Role = BoardRole.Creator
+            });
+            await _unitOfWork.Repository<Board>().AddAsync(board);
+
+                await _unitOfWork.CompleteAsync();
+            return board.Id;
+            
         }
 
-        public Task<bool> DeleteBoardAsync(int id)
+
+        public async Task<bool> DeleteBoardAsync(int id)
         {
-            throw new NotImplementedException();
+            var board = await _unitOfWork.Repository<Board>().GetByIdAsync(id);
+            if (board != null)
+            {
+                _unitOfWork.Repository<Board>().Delete(board);
+                await _unitOfWork.CompleteAsync();    
+                return true;
+            }
+            return false;
         }
 
-        public Task<IEnumerable<BoardDTO>> GetAllBoardsAsync()
+        public async Task<IEnumerable<GetBoardDTO>> GetAllBoardsAsync()
         {
-            throw new NotImplementedException();
+           var boards = await _unitOfWork.Repository<Board>().GetAllAsync();
+            var boardsDto = boards.Select(b => new GetBoardDTO
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Description = b.Description
+            }).ToList();
+            return boardsDto;
+
+
         }
 
-        public Task<BoardDTO?> GetBoardByIdAsync(int id)
+        public async Task<GetBoardDTO?> GetBoardByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var board = await _unitOfWork.Repository<Board>().GetByIdAsync(id);
+            if (board == null) return null;
+            return new GetBoardDTO() { Id = board.Id,Description = board.Description, Name = board.Name };
         }
 
-        public Task<bool> UpdateBoardAsync(int id, BoardDTO dto)
+        public async Task<bool> UpdateBoardAsync(int id, BoardDTO dto)
         {
-            throw new NotImplementedException();
+            var board = await _unitOfWork.Repository<Board>().GetByIdAsync(id);
+            if (board == null) return false;
+            board.Name = dto.Name;
+            board.Description = dto.Description;
+            _unitOfWork.Repository<Board>().Update(board);
+            await _unitOfWork.CompleteAsync();
+            return true;
+
+
         }
     }
 }

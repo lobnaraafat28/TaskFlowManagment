@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskFlow.Services.DTOs
+namespace TaskFlow.Application.DTOs
 {
-    public class BoardDTO
+    public class GetBoardDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
     }

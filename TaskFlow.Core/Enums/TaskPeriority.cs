@@ -9,7 +9,9 @@ namespace TaskFlow.Core.Enums
     public enum TaskPriority
     {
         Low,
-        Medium, High
-      
+        Medium,
+        High,
+        Critical
+
     }
 }
